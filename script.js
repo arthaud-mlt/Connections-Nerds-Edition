@@ -1,0 +1,262 @@
+const groups = [
+  { name: "FRUITS", words: ["APPLE", "BANANA", "GRAPE", "ORANGE"], color: "#f7de6c" },  // jaune
+  { name: "COLORS", words: ["RED", "BLUE", "GREEN", "YELLOW"], color: "#afc4ef" },     // bleu
+  { name: "ANIMALS", words: ["LION", "TIGER", "BEAR", "WOLF"], color: "#a0c35a" },     // vert
+  { name: "PLANETS", words: ["MARS", "VENUS", "JUPITER", "SATURN"], color: "#b881c7" } // violet
+];
+
+
+let allWords = groups.flatMap(group => group.words);
+let shuffledWords = shuffle([...allWords]);
+let foundGroups = [];
+let selected = [];
+let lives = 4;
+let testedGroups = [];
+
+const grid = document.getElementById("grid");
+const message = document.getElementById("message");
+
+function shuffle(array) {
+  return array.sort(() => Math.random() - 0.5);
+}
+
+function buildGrid() {
+  const previousPositions = new Map();
+
+  document.querySelectorAll(".word").forEach(el => {
+    const rect = el.getBoundingClientRect();
+    previousPositions.set(el.textContent, rect);
+  });
+
+  grid.innerHTML = "";
+
+  // Afficher groupes trouvés en gros blocs
+  foundGroups.forEach(groupName => {
+    const group = groups.find(g => g.name === groupName);
+
+    const groupBlock = document.createElement("div");
+    groupBlock.classList.add("group-block");
+    groupBlock.style.gridColumn = "span 4"; 
+    groupBlock.style.backgroundColor = group.color;
+    groupBlock.innerHTML = `<div><strong>${group.name}</strong></div><div>${group.words.join(", ")}</div>`;
+
+    grid.appendChild(groupBlock);
+  });
+
+  // Afficher mots restants
+  shuffledWords.forEach(word => {
+    if (foundGroups.some(groupName =>
+      groups.find(g => g.name === groupName).words.includes(word)
+    )) return;
+
+    const btn = document.createElement("button");
+    btn.textContent = word;
+    btn.classList.add("word");
+
+    btn.addEventListener("click", () => selectWord(btn, word));
+    grid.appendChild(btn);
+  });
+
+  // Après ajout, calculer nouvelles positions et animer différence
+  document.querySelectorAll(".word").forEach(el => {
+    const oldRect = previousPositions.get(el.textContent);
+    const newRect = el.getBoundingClientRect();
+
+    if (!oldRect) return;
+
+    const deltaX = oldRect.left - newRect.left;
+    const deltaY = oldRect.top - newRect.top;
+
+    if (deltaX || deltaY) {
+      el.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+      el.style.transition = 'transform 0s';
+
+      requestAnimationFrame(() => {
+        el.style.transition = 'transform 0.5s ease';
+        el.style.transform = '';
+      });
+
+      el.addEventListener('transitionend', () => {
+        el.style.transition = '';
+        el.style.transform = '';
+      }, { once: true });
+    }
+  });
+}
+
+function shuffleGrid() {
+  shuffledWords = shuffle([...allWords]);
+  selected = [];
+  updateLivesDisplay();
+  message.textContent = "";
+  buildGrid();
+}
+
+function selectWord(btn, word) {
+  if (btn.classList.contains("correct")) return;
+
+  // Si déjà sélectionné, on le retire
+  if (selected.includes(word)) {
+    selected = selected.filter(w => w !== word);
+    btn.classList.remove("selected");
+  } 
+  // Si pas encore sélectionné et qu'on a moins de 4 mots, on l’ajoute
+  else if (selected.length < 4) {
+    selected.push(word);
+    btn.classList.add("selected");
+  }
+
+  updateSubmitButton(); // met à jour l'état du bouton Submit
+}
+
+// Fonction utilitaire pour faire une pause (delay)
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// Fonction qui anime les sauts avec délai entre chaque
+async function animateJump(buttons) {
+  for (let i = 0; i < buttons.length; i++) {
+    buttons[i].classList.add("jump");      // ajoute la classe d'animation
+    await delay(250);                      // durée du saut (800 ms pour un saut plus tranquille)
+    buttons[i].classList.remove("jump");  // retire la classe pour pouvoir réanimer plus tard
+    await delay(5);                      // délai entre chaque saut
+  }
+}
+
+async function checkSelection() {
+  if (selected.length !== 4) {
+    // Pas le bon nombre, on sort
+    return;
+  }
+
+  const sorted = selected.slice().sort();
+  let correctGroup = groups.find(g =>
+    g.words.slice().sort().every((word, i) => word === sorted[i])
+  );
+
+  if (correctGroup) {
+    // Trouver les boutons sélectionnés
+    const buttons = Array.from(document.querySelectorAll(".word"))
+      .filter(btn => selected.includes(btn.textContent));
+
+    // Lancer l'animation des sauts (attend qu'elle se termine)
+    await animateJump(buttons);
+
+    // Puis transition vers le haut et fusion
+    foundGroups.push(correctGroup.name);
+
+    // Marquer les boutons comme correct et enlever sélection
+    buttons.forEach(btn => {
+      btn.classList.remove("selected");
+      btn.classList.add("correct");
+    });
+
+    // Reconstruire la grille pour mettre à jour l'affichage (groupe en haut)
+    buildGrid();
+
+    selected = [];
+    updateSubmitButton();
+
+    if (foundGroups.length === groups.length) {
+      // Tous trouvés, message ou autre gestion ici
+    }
+  } else {
+    // Gestion du cas incorrect (idem avant)
+    lives--;
+    updateLivesDisplay();
+
+    // Animation shake + désélection après
+    document.querySelectorAll(".word.selected").forEach(btn => {
+      btn.classList.add("shake");
+      btn.addEventListener("animationend", () => {
+        btn.classList.remove("shake");
+        btn.classList.remove("selected");
+      }, { once: true });
+    });
+
+    selected = [];
+    updateSubmitButton();
+  }
+}
+
+
+
+function updateSubmitButton() {
+  if (selected.length !== 4) {
+    submitBtn.disabled = true;
+    return;
+  }
+  
+  const sorted = selected.slice().sort();
+
+  // Désactiver submit si groupe déjà testé
+  const alreadyTested = testedGroups.some(testedGroupWords => 
+    testedGroupWords.slice().sort().every((w, i) => w === sorted[i])
+  );
+
+  submitBtn.disabled = alreadyTested;
+}
+
+function deselectAll() {
+  selected = [];
+  document.querySelectorAll(".word.selected").forEach(btn => btn.classList.remove("selected"));
+  updateSubmitButton(); // <== mise à jour aussi ici
+}
+
+  
+function updateLivesDisplay() {
+  const lifeDots = "● ".repeat(lives).trim();
+  document.getElementById("life-dots").textContent = lifeDots;
+}
+
+function revealRemainingGroups() {
+  groups.forEach(group => {
+    if (!foundGroups.includes(group.name)) {
+      group.words.forEach(word => {
+        document.querySelectorAll(".word").forEach(btn => {
+          if (btn.textContent === word && !btn.classList.contains("correct")) {
+            btn.classList.add("correct");
+            btn.classList.remove("selected");
+          }
+        });
+      });
+      foundGroups.push(group.name);
+    }
+  });
+}
+
+const submitBtn = document.getElementById("submit-btn");
+
+
+function isAlreadyTested(selectedGroup) {
+  // selectedGroup est un array de 4 mots triés
+  return testedGroups.some(tested =>
+    tested.length === 4 && tested.every((word, i) => word === selectedGroup[i])
+  );
+}
+
+function updateSubmitButton() {
+  if (selected.length !== 4) {
+    submitBtn.disabled = true;
+  } else {
+    const sortedSelected = selected.slice().sort();
+    submitBtn.disabled = isAlreadyTested(sortedSelected);
+  }
+}
+
+function showTemporaryMessage(text, duration = 800) {
+  const tempMsg = document.getElementById("temp-message");
+  tempMsg.textContent = text;
+  tempMsg.classList.add("show");
+  clearTimeout(tempMsg._timeoutId);
+  tempMsg._timeoutId = setTimeout(() => {
+    tempMsg.classList.remove("show");
+  }, duration);
+}
+
+
+// Initialisation
+buildGrid();
+
+

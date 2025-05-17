@@ -1,0 +1,159 @@
+body {
+  font-family: sans-serif;
+  text-align: center;
+  background: #f4f4f4;
+  padding: 20px;
+}
+
+h1 {
+  color: #333;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+  width: 66%;
+  max-width: 6000px;
+  margin: 20px auto;
+}
+
+
+button {
+  padding: 20px 10px;
+  font-size: 18px;
+  cursor: pointer;
+  min-height: 80px;
+}
+
+
+
+.word {
+  background-color: #efeee5;
+  color: #333333;
+  border: 2px solid #efeee5;
+  border-radius: 6px;
+  padding: 10px;
+  font-weight: 800;
+}
+
+
+.word.selected {
+  background-color: #333333;
+  color: #efeee5;
+}
+
+.word.correct {
+  background-color: #a3f7bf;
+  border-color: green;
+  pointer-events: none;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.controls button {
+  flex: 1;
+  min-width: 120px;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.lives {
+  color: #444; /* gris foncé */
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.group-block {
+  grid-column: span 4; /* fusionne 4 colonnes */
+  border-radius: 6px;
+  padding: 20px 10px;
+  font-weight: 800;
+  color: #222222;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  user-select: none;
+}
+
+
+.action-btn {
+  height: 40px;              /* hauteur fixe */
+  padding: 0 30px;           /* espace à gauche/droite pour étirer */
+  font-size: 16px;
+  border-radius: 20px;       /* moitié de la hauteur => arrondi parfait */
+  background-color: #333333;
+  color: white;
+  border: none;
+  cursor: pointer;
+
+  display: inline-flex;      /* centrer verticalement et horizontalement */
+  align-items: center;
+  justify-content: center;
+
+  white-space: nowrap;       /* empêche le texte de passer à la ligne */
+  user-select: none;
+  transition: background-color 0.2s;
+}
+
+.action-btn:hover {
+  background-color: #333333;
+}
+
+.action-btn:disabled {
+  background-color: #efeee5;      /* gris clair */
+  color: #333333;                 /* texte plus clair */
+  cursor: not-allowed;         /* curseur interdit */
+  opacity: 0.6;                /* légèrement transparent */
+  pointer-events: none;        /* désactive complètement le clic */
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  50% { transform: translateX(4px); }
+  75% { transform: translateX(-4px); }
+  100% { transform: translateX(0); }
+}
+
+.shake {
+  animation: shake 0.4s ease;
+}
+
+@keyframes jump {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); } /* saut plus haut */
+}
+
+.jump {
+  animation: jump 0.25s ease; /* durée doublée */
+}
+
+
+#temp-message {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(30,30,30,0.8);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 18px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1000;
+}
+#temp-message.show {
+  opacity: 1;
+}

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Connections Game</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>Connections Nerds Edition</h1>
+  
+  <div id="hint-message" style="display:none; position: fixed; top: 20%; left: 50%; transform: translateX(-50%); background: rgba(50,50,50,0.8); color: black; padding: 12px 20px; border-radius: 8px; font-weight: bold; z-index: 1000;"></div>
+  
+  <div id="found-groups" class="found-groups"></div>
+
+  <div id="grid" class="grid"></div>
+  
+  <div id="lives" class="lives">Mistakes Remaining: <span id="life-dots">● ● ● ●</span></div>
+
+  <p id="message"></p>
+  
+  <div id="temp-message"></div>
+
+  <!-- Conteneur vertical pour les boutons -->
+<div class="controls">
+  <button class="action-btn" onclick="deselectAll()">Deselect All</button>
+  <button class="action-btn" id="submit-btn" onclick="checkSelection()" disabled>Submit</button>
+</div>
+
+
+
+  <script src="script.js"></script>
+</body>
+</html>
+
