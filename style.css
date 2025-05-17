@@ -157,3 +157,43 @@ button {
 #temp-message.show {
   opacity: 1;
 }
+
+.summary {
+  background-color: #333;
+  color: white;
+  padding: 20px;
+  border-radius: 12px;
+  max-width: 400px;
+  margin: 20px auto;
+  text-align: center;
+}
+
+.summary pre {
+  font-size: 24px;
+  margin: 10px 0;
+  white-space: pre-line;
+}
+
+.summary-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* centre horizontalement */
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.share-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 20px;
+  background-color: #333333;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.share-btn:hover {
+  background-color: #555333;
+}
+
