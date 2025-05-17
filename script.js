@@ -162,7 +162,7 @@ async function checkSelection() {
     updateSubmitButton();
 
     if (foundGroups.length === groups.length) {
-      // Tous les groupes ont été trouvés
+      showGameSummary();
     }
 
   } else {
@@ -179,6 +179,11 @@ async function checkSelection() {
     // Perte d'une vie
     lives--;
     updateLivesDisplay();
+    
+    if (lives <= 0) {
+  showGameSummary();
+}
+
 
     // Animation de shake + désélection
     document.querySelectorAll(".word.selected").forEach(btn => {
@@ -267,8 +272,60 @@ function showTemporaryMessage(text, duration = 800) {
   }, duration);
 }
 
+function emojiFromColor(color) {
+  switch (color) {
+    case "#f7de6c": return "🟨"; // jaune
+    case "#afc4ef": return "🟦"; // bleu
+    case "#a0c35a": return "🟩"; // vert
+    case "#b881c7": return "🟪"; // violet
+    default: return "⬜";        // inconnu
+  }
+}
+
+
+function showGameSummary() {
+  const summaryContainer = document.createElement("div");
+  summaryContainer.style.marginTop = "30px";
+  summaryContainer.style.padding = "20px";
+  summaryContainer.style.backgroundColor = "rgba(0, 0, 0, 0.05)";
+  summaryContainer.style.borderRadius = "10px";
+  summaryContainer.style.display = "inline-block";
+  summaryContainer.style.textAlign = "left";
+
+  const summaryTitle = document.createElement("h2");
+  summaryTitle.textContent = "Connections Nerds Edition";
+  summaryTitle.style.marginBottom = "10px";
+  summaryContainer.appendChild(summaryTitle);
+
+  const summaryLines = testedGroups.map(groupWords => {
+    return groupWords.map(word => {
+      const group = groups.find(g => g.words.includes(word));
+      if (!group) return "⬜";
+      return foundGroups.includes(group.name) ? emojiFromColor(group.color) : "⬜";
+    }).join("");
+  });
+
+  const resultDisplay = document.createElement("pre");
+  resultDisplay.textContent = summaryLines.join("\n");
+  resultDisplay.style.fontSize = "24px";
+  resultDisplay.style.marginBottom = "10px";
+  resultDisplay.style.textAlign = "center";
+  resultDisplay.style.fontFamily = "monospace";
+  summaryContainer.appendChild(resultDisplay);
+
+
+  const shareBtn = document.createElement("button");
+  shareBtn.textContent = "Share Results";
+  shareBtn.className = "action-btn";
+  shareBtn.addEventListener("click", () => {
+    navigator.clipboard.writeText(summaryLines.join("\n"))
+      .catch(() => alert("Failed to copy."));
+  });
+  summaryContainer.appendChild(shareBtn);
+
+  document.body.appendChild(summaryContainer);
+}
+
 
 // Initialisation
 buildGrid();
-
-
