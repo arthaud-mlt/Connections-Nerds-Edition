@@ -1,5 +1,5 @@
 const groups = [
-  { name: "FRUITS", words: ["STRAWBERRY", "BANANA", "GRAPE", "ORANGE"], color: "#f7de6c" },  // jaune
+  { name: "FRUITS", words: ["APPLE", "BANANA", "GRAPE", "ORANGE"], color: "#f7de6c" },  // jaune
   { name: "COLORS", words: ["RED", "BLUE", "GREEN", "YELLOW"], color: "#afc4ef" },     // bleu
   { name: "ANIMALS", words: ["LION", "TIGER", "BEAR", "WOLF"], color: "#a0c35a" },     // vert
   { name: "PLANETS", words: ["MARS", "VENUS", "JUPITER", "SATURN"], color: "#b881c7" } // violet
@@ -125,53 +125,66 @@ async function animateJump(buttons) {
 }
 
 async function checkSelection() {
-  if (selected.length !== 4) {
-    // Pas le bon nombre, on sort
+  if (selected.length !== 4) return;
+
+  const sorted = selected.slice().sort();
+
+  // Vérifie si ce groupe a déjà été testé
+  if (isAlreadyTested(sorted)) {
+    updateSubmitButton();
     return;
   }
 
-  const sorted = selected.slice().sort();
+  // Ajoute ce groupe aux groupes testés
+  testedGroups.push(sorted);
+
+  // Vérifie si c'est un groupe correct
   let correctGroup = groups.find(g =>
     g.words.slice().sort().every((word, i) => word === sorted[i])
   );
 
   if (correctGroup) {
-    // Trouver les boutons sélectionnés
+    // Animation des bons mots
     const buttons = Array.from(document.querySelectorAll(".word"))
       .filter(btn => selected.includes(btn.textContent));
 
-    // Lancer l'animation des sauts (attend qu'elle se termine)
     await animateJump(buttons);
 
-    // Puis transition vers le haut et fusion
     foundGroups.push(correctGroup.name);
 
-    // Marquer les boutons comme correct et enlever sélection
     buttons.forEach(btn => {
       btn.classList.remove("selected");
       btn.classList.add("correct");
     });
 
-    // Reconstruire la grille pour mettre à jour l'affichage (groupe en haut)
     buildGrid();
-
     selected = [];
     updateSubmitButton();
 
     if (foundGroups.length === groups.length) {
-      // Tous trouvés, message ou autre gestion ici
+      // Tous les groupes ont été trouvés
     }
+
   } else {
-    // Gestion du cas incorrect (idem avant)
+    // Vérifie si c'est un "One Away"
+    let isOneAway = groups.some(group => {
+      const matchCount = selected.filter(word => group.words.includes(word)).length;
+      return matchCount === 3;
+    });
+
+    if (isOneAway) {
+      showTemporaryMessage("One away...");
+    }
+
+    // Perte d'une vie
     lives--;
     updateLivesDisplay();
 
-    // Animation shake + désélection après
+    // Animation de shake + désélection
     document.querySelectorAll(".word.selected").forEach(btn => {
       btn.classList.add("shake");
       btn.addEventListener("animationend", () => {
-        btn.classList.remove("shake");
-        btn.classList.remove("selected");
+        btn.classList.remove("shake", "selected");
       }, { once: true });
     });
 
@@ -179,7 +192,6 @@ async function checkSelection() {
     updateSubmitButton();
   }
 }
-
 
 
 function updateSubmitButton() {
