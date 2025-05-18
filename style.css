@@ -86,13 +86,13 @@ button {
 
 
 .action-btn {
-  height: 40px;              /* hauteur fixe */
-  padding: 0 30px;           /* espace à gauche/droite pour étirer */
-  font-size: 16px;
+  height: 5px;              /* hauteur fixe */
+  padding: 0 10px;           /* espace à gauche/droite pour étirer */
+  font-size: 6px;
   border-radius: 20px;       /* moitié de la hauteur => arrondi parfait */
   background-color: #333333;
   color: white;
-  border: none;
+  border: solid;
   cursor: pointer;
 
   display: inline-flex;      /* centrer verticalement et horizontalement */
@@ -112,7 +112,7 @@ button {
   background-color: #efeee5;      /* gris clair */
   color: #333333;                 /* texte plus clair */
   cursor: not-allowed;         /* curseur interdit */
-  opacity: 0.6;                /* légèrement transparent */
+  opacity: 1;                /* légèrement transparent */
   pointer-events: none;        /* désactive complètement le clic */
 }
 
@@ -179,11 +179,11 @@ button {
   flex-direction: column;
   align-items: center; /* centre horizontalement */
   gap: 15px;
-  margin-top: 30px;
+  margin-top: 10px;
 }
 
 .share-btn {
-  padding: 10px 20px;
+  padding: 5px 10px;
   border: none;
   border-radius: 20px;
   background-color: #333333;
@@ -191,7 +191,15 @@ button {
   font-size: 16px;
   cursor: pointer;
   transition: background-color 0.3s;
+  align-self: center; /* ✅ ceci centre horizontalement dans le container */
 }
+
+
+.share-btn:hover {
+  background-color: #555333;
+}
+
+
 
 .share-btn:hover {
   background-color: #555333;
