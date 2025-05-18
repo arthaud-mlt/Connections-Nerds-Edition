@@ -286,11 +286,14 @@ function emojiFromColor(color) {
 function showGameSummary() {
   const summaryContainer = document.createElement("div");
   summaryContainer.style.marginTop = "30px";
-  summaryContainer.style.padding = "20px";
+  summaryContainer.style.padding = "10px";
   summaryContainer.style.backgroundColor = "rgba(0, 0, 0, 0.05)";
   summaryContainer.style.borderRadius = "10px";
-  summaryContainer.style.display = "inline-block";
-  summaryContainer.style.textAlign = "left";
+  summaryContainer.style.display = "flex";
+  summaryContainer.style.flexDirection = "column";
+  summaryContainer.style.alignItems = "center"; // ✅ centrer horizontalement
+  summaryContainer.style.textAlign = "center";  // ✅ centrer le texte aussi
+
 
   const summaryTitle = document.createElement("h2");
   summaryTitle.textContent = "Connections Nerds Edition";
@@ -316,7 +319,7 @@ function showGameSummary() {
 
   const shareBtn = document.createElement("button");
   shareBtn.textContent = "Share Results";
-  shareBtn.className = "action-btn";
+  shareBtn.className = "share-btn";
   shareBtn.addEventListener("click", () => {
     navigator.clipboard.writeText(summaryLines.join("\n"))
       .catch(() => alert("Failed to copy."));
@@ -329,3 +332,5 @@ function showGameSummary() {
 
 // Initialisation
 buildGrid();
+
+
