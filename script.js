@@ -1,8 +1,8 @@
 const groups = [
-  { name: "THINGS YOU CAN SEE IN THE SKY", words: ["STAR", "PLANE", "CLOUD", "BALOON"], color: "#f7de6c" },  // jaune
-  { name: "___ SHARK", words: ["BABY", "NURSE", "LOAN", "WHITE"], color: "#afc4ef" },     // bleu
-  { name: "PROCESS IN AN EARLY STAGE", words: ["INFANT", "EMERGENT", "INCIPIENT", "NASCENT"], color: "#a0c35a" },     // vert
-  { name: "WORDS STARTING WITH THE OFFICE CHARACTERS", words: ["HOLLYWOOD", "PAMPHLET", "JANUARY", "TODDLER"], color: "#b881c7" } // violet
+  { name: "FRUITS", words: ["APPLE", "BANANA", "GRAPE", "ORANGE"], color: "#f7de6c" },  // jaune
+  { name: "COLORS", words: ["RED", "BLUE", "GREEN", "YELLOW"], color: "#afc4ef" },     // bleu
+  { name: "ANIMALS", words: ["LION", "TIGER", "BEAR", "WOLF"], color: "#a0c35a" },     // vert
+  { name: "PLANETS", words: ["MARS", "VENUS", "JUPITER", "SATURN"], color: "#b881c7" } // violet
 ];
 
 
@@ -181,10 +181,11 @@ async function checkSelection() {
     updateLivesDisplay();
     
     if (lives <= 0) {
+  revealRemainingGroups();
+  buildGrid();
   showGameSummary();
 }
-
-
+    
     // Animation de shake + désélection
     document.querySelectorAll(".word.selected").forEach(btn => {
       btn.classList.add("shake");
@@ -332,5 +333,3 @@ function showGameSummary() {
 
 // Initialisation
 buildGrid();
-
-
