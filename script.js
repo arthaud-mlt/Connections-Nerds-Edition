@@ -1,8 +1,8 @@
 const groups = [
-  { name: "FRUITS", words: ["APPLE", "BANANA", "GRAPE", "ORANGE"], color: "#f7de6c" },  // jaune
-  { name: "COLORS", words: ["RED", "BLUE", "GREEN", "YELLOW"], color: "#afc4ef" },     // bleu
-  { name: "ANIMALS", words: ["LION", "TIGER", "BEAR", "WOLF"], color: "#a0c35a" },     // vert
-  { name: "PLANETS", words: ["MARS", "VENUS", "JUPITER", "SATURN"], color: "#b881c7" } // violet
+  { name: "VERBES SIGNIFIANT UN ECHEC SANS LE R", words: ["LOUPE", "RATE", "MANQUE", "FOIRE"], color: "#f7de6c" },  // jaune
+  { name: "CONSTELLATIONS", words: ["CAPRICORNE", "FLECHE", "PEINTRE", "TELESCOPE"], color: "#a0c35a" },     // vert
+  { name: "COMMENCE PAR UNE NOTE DE MUSIQUE", words: ["SOLEIL", "MICROSCOPE", "LANGUE", "FATIGUE"], color: "#afc4ef" },     // bleu
+  { name: "MOTS DESQUELS SONT TIRES LES SURNOMS DES MARAUDEURS DANS HP : LUNARD, QUEUDVER, CORNEDRUE, PATMOL", words: ["LUNE", "QUEUE", "PATTE", "CORNE"], color: "#b881c7" } // violet
 ];
 
 
